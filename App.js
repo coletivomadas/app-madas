@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Switch } from 'react-native';
 import { Calendar, LocaleConfig, defaultLocale } from 'react-native-calendars';
 
 LocaleConfig.locales['pt-br'] = {
@@ -14,13 +14,36 @@ LocaleConfig.defaultLocale = 'pt-br';
 
 export default function App() {
   const currentDate = new Date();
+  const [isEnabled, setIsEnabled] = useState(false);
   return (
     <View style={styles.container}>
       <Calendar
         style={{width:"90%"}}
         // Initially visible month. Default = Date()
         current={currentDate}
+
+        markedDates={{
+          '2020-05-10': {selected: true, startingDay: true, color: primaryColor},
+          '2020-05-11': {selected: true, color: primaryColor, endingDay: true},
+          '2020-05-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
+          '2020-05-22': {selected: true, startingDay: true, color: secundaryColor, endingDay: true},
+          '2020-05-23': {selected: true, startingDay: true, color: secundaryColor, endingDay: true},
+
+        }}
+        markingType={'period'}
+
+        theme={{ arrowColor: primaryColor }}
       />
+      <View style={styles.rowContainer}>
+        <View style={styles.switchContainer}>
+          <Text> Madás </Text>
+          <Switch thumbColor={primaryColor} value={isEnabled} onValueChange={() => setIsEnabled(!isEnabled)}/>
+        </View>
+        <View style={styles.switchContainer}>
+          <Text> PLPs </Text>
+          <Switch thumbColor={secundaryColor} value={true}/>
+        </View>
+      </View>
     </View>
   );
 }
@@ -32,4 +55,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 48,
   },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 30
+  },
+  switchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
+
 })
+
+const primaryColor = '#5e64ab';
+const secundaryColor = '#17a1ce';
+const whiteColor = '#ffffff';
