@@ -14,7 +14,32 @@ LocaleConfig.defaultLocale = 'pt-br';
 
 export default function App() {
   const currentDate = new Date();
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [madasAtivo, madasMudarEstado] = useState(false);
+  const [PLPsAtivo, PLPsMudarEstado] = useState(false);
+
+  function atualizarEstado() {
+    madasMudarEstado(!madasAtivo);
+  }
+
+  function atualizarEstadoPLPs() {
+    PLPsMudarEstado(!PLPsAtivo);
+  }
+
+  const datasMadas = {
+    '2020-05-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
+    '2020-05-22': {selected: true, startingDay: true, color: primaryColor},
+    '2020-05-23': {selected: true, color: primaryColor, endingDay: true},
+  }
+
+  const datasPLPs = {
+    '2020-05-10': {selected: true, startingDay: true, color: secundaryColor},
+    '2020-05-11': {selected: true, color: secundaryColor, endingDay: true}
+  }
+  const markedDates = {
+    ...PLPsAtivo ? datasPLPs : {},
+    ...madasAtivo ? datasMadas : {}
+  };
+
   return (
     <View style={styles.container}>
       <Calendar
@@ -22,14 +47,7 @@ export default function App() {
         // Initially visible month. Default = Date()
         current={currentDate}
 
-        markedDates={{
-          '2020-05-10': {selected: true, startingDay: true, color: primaryColor},
-          '2020-05-11': {selected: true, color: primaryColor, endingDay: true},
-          '2020-05-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
-          '2020-05-22': {selected: true, startingDay: true, color: secundaryColor, endingDay: true},
-          '2020-05-23': {selected: true, startingDay: true, color: secundaryColor, endingDay: true},
-
-        }}
+        markedDates={markedDates}
         markingType={'period'}
 
         theme={{ arrowColor: primaryColor }}
@@ -37,11 +55,18 @@ export default function App() {
       <View style={styles.rowContainer}>
         <View style={styles.switchContainer}>
           <Text> Madás </Text>
-          <Switch thumbColor={primaryColor} value={isEnabled} onValueChange={() => setIsEnabled(!isEnabled)}/>
+          <Switch
+            thumbColor={primaryColor}
+            value={madasAtivo}
+            onValueChange={atualizarEstado}/>
         </View>
         <View style={styles.switchContainer}>
           <Text> PLPs </Text>
-          <Switch thumbColor={secundaryColor} value={true}/>
+          <Switch 
+          thumbColor={secundaryColor} 
+          value={PLPsAtivo}
+          onValueChange={atualizarEstadoPLPs}
+          />
         </View>
       </View>
     </View>
