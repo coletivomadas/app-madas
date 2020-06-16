@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Text, View, Switch, Alert } from 'react-native';
 import { Calendar, LocaleConfig, defaultLocale } from 'react-native-calendars';
 
 LocaleConfig.locales['pt-br'] = {
@@ -16,6 +16,8 @@ export default function App() {
   const currentDate = new Date();
   const [madasAtivo, madasMudarEstado] = useState(false);
   const [PLPsAtivo, PLPsMudarEstado] = useState(false);
+  const [isEventShowing, setEventState] = useState(false);
+  const [selectDay, setSelectDay] = useState('2020-06-15');
 
   function atualizarEstado() {
     madasMudarEstado(!madasAtivo);
@@ -50,6 +52,11 @@ export default function App() {
         markedDates={markedDates}
         markingType={'period'}
 
+        onDayPress={(day)=> {
+          setEventState(true); 
+          setSelectDay(day.dateString);
+        console.log(day)}}
+
         theme={{ arrowColor: primaryColor }}
       />
       <View style={styles.rowContainer}>
@@ -69,6 +76,15 @@ export default function App() {
           />
         </View>
       </View>
+      {isEventShowing ?  
+      <View style={styles.cardContainer}>
+        <Text style={styles.cardTitulo}>
+          Formação interna
+        </Text>
+        <Text style={styles.cardHorario}>
+          14:00 às 16:00
+        </Text>
+      </View>: null}
     </View>
   );
 }
@@ -89,10 +105,29 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  cardContainer: {
+    backgroundColor: '#fff',
+    minHeight: 20,
+    width: '90%',
+    margin: 20,
+    borderRadius: 18,
+    paddingLeft: 20,
+    elevation: 10
+  },
+  cardTitulo: {
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10
+  },
+  cardHorario: {
+    fontStyle: "italic",
+    color: '#646464',
+    marginBottom: 20
   }
-
 })
 
 const primaryColor = '#5e64ab';
 const secundaryColor = '#17a1ce';
 const whiteColor = '#ffffff';
+
