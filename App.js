@@ -18,6 +18,9 @@ export default function App() {
   const [PLPsAtivo, PLPsMudarEstado] = useState(false);
   const [isEventShowing, setEventState] = useState(false);
   const [selectDay, setSelectDay] = useState('2020-06-15');
+  const [markedDays, setMarkedDays] = useState({ [selectDay]: {selected: true, color: primaryColor}})
+
+
 
   function atualizarEstado() {
     madasMudarEstado(!madasAtivo);
@@ -47,14 +50,14 @@ export default function App() {
       <Calendar
         style={{width:"90%"}}
         // Initially visible month. Default = Date()
-        current={currentDate}
+        current={selectDay}
 
-        markedDates={markedDates}
-        markingType={'period'}
+        markedDates={markedDays}
 
         onDayPress={(day)=> {
           setEventState(true); 
           setSelectDay(day.dateString);
+          setMarkedDays({[day.dateString]: {selected: true, selectedColor: primaryColor, startingDay: true, endingDay: true}})
         console.log(day)}}
 
         theme={{ arrowColor: primaryColor }}
