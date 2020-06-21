@@ -16,49 +16,59 @@ export default function App() {
   const currentDate = new Date();
   const [madasAtivo, madasMudarEstado] = useState(false);
   const [PLPsAtivo, PLPsMudarEstado] = useState(false);
-  const [isEventShowing, setEventState] = useState(false);
-  const [selectDay, setSelectDay] = useState('2020-06-15');
-  const [markedDays, setMarkedDays] = useState({ [selectDay]: {selected: true, color: primaryColor}})
-
-
-
-  function atualizarEstado() {
-    madasMudarEstado(!madasAtivo);
-  }
-
-  function atualizarEstadoPLPs() {
-    PLPsMudarEstado(!PLPsAtivo);
-  }
+  const [cardEvento, setEventState] = useState(null);
 
   const datasMadas = {
-    '2020-05-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
-    '2020-05-22': {selected: true, startingDay: true, color: primaryColor},
-    '2020-05-23': {selected: true, color: primaryColor, endingDay: true},
+    '2020-06-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
+    '2020-06-22': {selected: true, startingDay: true, color: primaryColor},
+    '2020-06-23': {selected: true, color: primaryColor, endingDay: true},
+  }
+  
+  const datasPLPs = {
+    '2020-06-10': {selected: true, startingDay: true, color: secundaryColor},
+    '2020-06-11': {selected: true, color: secundaryColor, endingDay: true}
   }
 
-  const datasPLPs = {
-    '2020-05-10': {selected: true, startingDay: true, color: secundaryColor},
-    '2020-05-11': {selected: true, color: secundaryColor, endingDay: true}
-  }
   const markedDates = {
     ...PLPsAtivo ? datasPLPs : {},
     ...madasAtivo ? datasMadas : {}
   };
+
+  // Controla qual dia está selecionado;
+  // const [selectDay, setSelectDay] = useState('2020-06-15');
+
+  // Controla quais dias estão marcados no calendário;
+  const [markedDays, setMarkedDays] = useState({
+    ...markedDates
+    // [selectDay]: {selected: true, color: primaryColor}
+  })
+
+  function atualizarEstado() {
+    setMarkedDays({ ...(madasAtivo === false) ? datasMadas : {} });
+    madasMudarEstado(!madasAtivo);
+  }
+
+  function atualizarEstadoPLPs() {
+    setMarkedDays({ ...(PLPsAtivo === false) ? datasPLPs : {} });
+    PLPsMudarEstado(!PLPsAtivo);
+  }
 
   return (
     <View style={styles.container}>
       <Calendar
         style={{width:"90%"}}
         // Initially visible month. Default = Date()
-        current={selectDay}
+        // current={selectDay}
 
         markedDates={markedDays}
 
         onDayPress={(day)=> {
-          setEventState(true); 
-          setSelectDay(day.dateString);
-          setMarkedDays({[day.dateString]: {selected: true, selectedColor: primaryColor, startingDay: true, endingDay: true}})
-        console.log(day)}}
+          if (markedDays[day]) {
+            setEventState({ titulo: 'Planejamento 2020', horario: '08h00 às 18h00' })
+          } else {
+            setEventState({ titulo: 'Nada marcado para esse dia. :(', horario: null})
+          }
+        }}
 
         theme={{ arrowColor: primaryColor }}
       />
@@ -79,13 +89,13 @@ export default function App() {
           />
         </View>
       </View>
-      {isEventShowing ?  
+      {cardEvento ?  
       <View style={styles.cardContainer}>
         <Text style={styles.cardTitulo}>
-          Formação interna
+          {cardEvento.titulo}
         </Text>
         <Text style={styles.cardHorario}>
-          14:00 às 16:00
+          {cardEvento.horario}
         </Text>
       </View>: null}
     </View>
