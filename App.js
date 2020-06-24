@@ -19,14 +19,15 @@ export default function App() {
   const [cardEvento, setEventState] = useState(null);
 
   const datasMadas = {
-    '2020-06-28': {selected: true, startingDay: true, color: primaryColor, endingDay: true},
-    '2020-06-22': {selected: true, startingDay: true, color: primaryColor},
-    '2020-06-23': {selected: true, color: primaryColor, endingDay: true},
+    '2020-06-28': {selected: true, startingDay: true, selectedColor: primaryColor, endingDay: true},
+    '2020-06-22': {selected: true, startingDay: true, selectedColor: primaryColor},
+    '2020-06-23': {selected: true, selectedColor: primaryColor, endingDay: true},
   }
   
   const datasPLPs = {
-    '2020-06-10': {selected: true, startingDay: true, color: secundaryColor},
-    '2020-06-11': {selected: true, color: secundaryColor, endingDay: true}
+    '2020-06-10': {selected: true, startingDay: true, selectedColor: secundaryColor},
+    '2020-06-11': {selected: true, selectedColor: secundaryColor, endingDay: true}, 
+    '2020-06-12': null
   }
 
   const markedDates = {
@@ -43,13 +44,49 @@ export default function App() {
     // [selectDay]: {selected: true, color: primaryColor}
   })
 
-  function atualizarEstado() {
-    setMarkedDays({ ...(madasAtivo === false) ? datasMadas : {} });
+  function atualizarEstadoMadas() {
+    if (madasAtivo === false) {
+      const datasMarcadas = {
+        ...markedDays,
+        ...datasMadas
+      };
+      setMarkedDays(datasMarcadas);
+    }
+    else {
+      let datasApagadas = {}
+      for (const prop in datasMadas) {
+        datasApagadas[prop] = null
+      }
+      console.log(datasApagadas)
+      const datasMarcadas = {
+        ...markedDays,
+        ...datasApagadas
+      }
+      setMarkedDays(datasMarcadas)
+    }
     madasMudarEstado(!madasAtivo);
   }
 
   function atualizarEstadoPLPs() {
-    setMarkedDays({ ...(PLPsAtivo === false) ? datasPLPs : {} });
+    if (PLPsAtivo === false) {
+      const datasMarcadas = {
+        ...markedDays,
+        ...datasPLPs
+      };
+      setMarkedDays(datasMarcadas);
+    }
+    else {
+      let datasApagadas = {}
+      for (const prop in datasPLPs) {
+        datasApagadas[prop] = null
+      }
+      console.log(datasApagadas)
+      const datasMarcadas = {
+        ...markedDays,
+        ...datasApagadas
+      }
+      setMarkedDays(datasMarcadas)
+    }
     PLPsMudarEstado(!PLPsAtivo);
   }
 
@@ -78,7 +115,7 @@ export default function App() {
           <Switch
             thumbColor={primaryColor}
             value={madasAtivo}
-            onValueChange={atualizarEstado}/>
+            onValueChange={atualizarEstadoMadas}/>
         </View>
         <View style={styles.switchContainer}>
           <Text> PLPs </Text>
